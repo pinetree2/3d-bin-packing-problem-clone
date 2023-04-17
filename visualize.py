@@ -6,12 +6,16 @@ import matplotlib.pyplot as plt
 import random
 
 trucks = [
+    #컨테이너 각각의 크기
     [250, 250, 500],
-    [500, 500, 400],
+    [500, 500, 500],
+    '''
+     [500, 500, 400],
     [300, 300, 300],
     [300, 300, 200],
     [300, 300, 100],
     [500, 500, 500]
+    '''
 ]
 
 
@@ -19,7 +23,10 @@ trucks = [
 
 for t in range(len(trucks)):
     packer = Packer()
-
+    truckX = trucks[t][0]
+    truckY = trucks[t][1]
+    truckZ = trucks[t][2]
+    '''
     #packer.add_bin(Bin('small-envelope', 11.5, 6.125, 0.25, 10))
     #packer.add_bin(Bin('large-envelope', 15.0, 12.0, 0.75, 15))
     #packer.add_bin(Bin('small-box', 8.625, 5.375, 1.625, 70.0))
@@ -27,30 +34,27 @@ for t in range(len(trucks)):
     #packer.add_bin(Bin('medium-2-box', 13.625, 11.875, 3.375, 70.0))
     #packer.add_bin(Bin('large-box', 240, 244, 1360, 70.0))
     #packer.add_bin(Bin('large-2-box', 23.6875, 11.75, 3.0, 70.0))
-
-    truckX = trucks[t][0]
-    truckY = trucks[t][1]
-    truckZ = trucks[t][2]
-
+    '''
+#Bin( container 이름 , contianer 가로 , container 세로 , container 높이 , 최대 무게) 컨테이너 생성
     packer.add_bin(Bin('LB', truckX, truckY, truckZ, 3000.0))
+#Item(item 이름 , 가로 , 세로 , 높이, 무게)적재
+    for i in range(5):
+        packer.add_item(Item('boxU' + str(i), 200, 100, 50, 1))
 
+    '''
+    for i in range(10):
+        packer.add_item(Item('boxU'+str(i), 100, 100, 100, 1))
 
     for i in range(300):
         packer.add_item(Item('boxL'+str(i), 20, 40, 20, 1))
 
     for i in range(10):
-        packer.add_item(Item('boxU'+str(i), 100, 100, 100, 1))
-
-    for i in range(5):
-        packer.add_item(Item('boxU'+str(i), 200, 100, 50, 1))
-
-    for i in range(10):
         packer.add_item(Item('boxU'+str(i), 40, 40, 20, 1))
-
+    '''
 
     #packer.pack()
-    packer.pack(bigger_first=False)
 
+    packer.pack(bigger_first=False)
     positions = []
     sizes = []
     colors = []
@@ -58,8 +62,7 @@ for t in range(len(trucks)):
 
     for b in packer.bins:
         print(":::::::::::", b.string())
-
-        print("FITTED ITEMS:")
+        print("FITTED ITEMS 적재가능한 물품 정보 출력:")
         for item in b.items:
             print("====> ", item.string())
             x = float(item.position[0])
@@ -68,7 +71,7 @@ for t in range(len(trucks)):
             positions.append((x,y,z))
             sizes.append((float(item.get_dimension()[0]), float(item.get_dimension()[1]), float(item.get_dimension()[2])))
 
-        print("UNFITTED ITEMS:")
+        print("UNFITTED ITEMS 적재 불가능한 물품 정보 출력 :")
         for item in b.unfitted_items:
             print("====> ", item.string())
             
@@ -110,7 +113,8 @@ for t in range(len(trucks)):
     print(colors)
 
     fig = plt.figure()
-    ax = fig.gca(projection='3d')
+    ax = fig.add_subplot(111, projection='3d')
+    #오류발생해서 수정함, gca() 메소드가 키워드 인수 projection 을 받지않음
     ax.set_aspect('auto')
 
     pc = plotCubeAt2(positions,sizes,colors=colors, edgecolor="k")
